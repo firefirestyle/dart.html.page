@@ -15,7 +15,7 @@ class ToolbarItemMulti extends ToolbarItem {
   ToolbarItemMulti(this.label, this.id, this.items) {}
 
   html.Element makeElement(String ida, String className) {
-    var ret = new html.Element.html(["""<div ><div id="${id}" style="width:100%;">${label}<div><div id="${"${id}cont"}" style="display:hide;"></div></div>"""].join(), treeSanitizer: html.NodeTreeSanitizer.trusted);
+    var ret = new html.Element.html(["""<div ><div id="${id}" style="width:100%;">${label}<div><div id="${"${id}cont"}" style="display:none;"></div></div>"""].join(), treeSanitizer: html.NodeTreeSanitizer.trusted);
     var retCont = ret.querySelector("#${id}cont");
     items.forEach((v) {
       retCont.children.add(v.makeElement(ida, className));
