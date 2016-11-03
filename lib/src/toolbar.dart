@@ -2,30 +2,37 @@ part of firefirestyle.html.page;
 
 abstract class ToolbarItem {
   html.Element makeElement(String id, String className);
-  Map<String,ToolbarItem> toUrlItem() {
+  Map<String, ToolbarItem> toUrlItem() {
     return {};
   }
 }
+
 class ToolbarItemMulti extends ToolbarItem {
   List<ToolbarItemSingle> items = [];
-  String label="";
-  String id="";
+  String label = "";
+  String id = "";
 
-  ToolbarItemMulti(this.label, this.id,this.items) {
-  }
+  ToolbarItemMulti(this.label, this.id, this.items) {}
 
-  html.Element makeElement(String id, String className) {
-    var ret =  new html.Element.html(
-      ["""<div id="${id}">${label}</div>"""].join(), treeSanitizer: html.NodeTreeSanitizer.trusted);
-    items.forEach((v){
-      ret.children.add(v.makeElement(id, className));
+  html.Element makeElement(String ida, String className) {
+    var ret = new html.Element.html(["""<div ><div id="${id}" style="width:100%;">${label}<div><div id="${"${id}cont"}" style="display:hide;"></div></div>"""].join(), treeSanitizer: html.NodeTreeSanitizer.trusted);
+    var retCont = ret.querySelector("#${id}cont");
+    items.forEach((v) {
+      retCont.children.add(v.makeElement(ida, className));
+    });
+    ret.querySelector("#${id}").onClick.listen((ev){
+      if(retCont.style.display == "block") {
+        retCont.style.display = "none";
+      } else {
+        retCont.style.display = "block";
+      }
     });
     return ret;
   }
 
-  Map<String,ToolbarItem> toUrlItem() {
+  Map<String, ToolbarItem> toUrlItem() {
     Map<String, ToolbarItemSingle> ret = {};
-    items.forEach((v){
+    items.forEach((v) {
       ret[v.url] = v;
     });
     return ret;
@@ -35,17 +42,15 @@ class ToolbarItemMulti extends ToolbarItem {
 class ToolbarItemSingle extends ToolbarItem {
   String url;
   String label;
-  ToolbarItemSingle(this.label, this.url) {
-  }
+  ToolbarItemSingle(this.label, this.url) {}
   html.Element makeElement(String id, String className) {
-    return new html.Element.html(
-      ["""<a href="${url}" id="${id}" class="${className}"> ${label} </a>"""].join(), treeSanitizer: html.NodeTreeSanitizer.trusted);
+    return new html.Element.html(["""<a href="${url}" id="${id}" class="${className}"> ${label} </a>"""].join(), treeSanitizer: html.NodeTreeSanitizer.trusted);
   }
-  Map<String,ToolbarItem> toUrlItem() {
-    return {url:this};
+
+  Map<String, ToolbarItem> toUrlItem() {
+    return {url: this};
   }
 }
-
 
 class Toolbar extends Page {
   String navigatorId = "fire-navigation";
@@ -144,9 +149,10 @@ class Toolbar extends Page {
     var navigatorLeft = rootElm.querySelector("#${navigatorLeftId}");
     navigatorLeft.children.clear();
     for (int i = 0; i < leftItems.length; i++) {
-      leftItems[i].toUrlItem().forEach((k,ToolbarItem v){
-        var item = leftItems[i].makeElement("", "${navigatorItemId+mode}");
-        navigatorLeft.children.add(item);
+      var item = leftItems[i].makeElement("", "${navigatorItemId+mode}");
+      navigatorLeft.children.add(item);
+
+      leftItems[i].toUrlItem().forEach((k, ToolbarItem v) {
         elms[k] = item;
         item.onClick.listen((e) {
           for (var ee in elms.values) {
@@ -159,7 +165,6 @@ class Toolbar extends Page {
           }
         });
       });
-
     }
   }
 
