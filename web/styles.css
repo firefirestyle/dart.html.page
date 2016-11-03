@@ -22,7 +22,7 @@ body {
   width: 300px;
   z-index: 1000;
 }
-
+/*
 .fire-navigation_humberger::before {
     background-color: #fff;
     border-radius: 0 0 0 10px;
@@ -38,7 +38,7 @@ body {
     top: 0;
     width: 50px;
 }
-
+*/
 .fire-navigation-opt_humberger {
   display: block;
   height: 100px;
@@ -87,7 +87,7 @@ body {
 *************/
 
 
-.fire-navigation.tab {
+.fire-navigation_tab {
   position: fixed;
   background-color: #ffeeee;
   color: white;
@@ -96,17 +96,17 @@ body {
   top: 0px;
   right: 0px;
 }
-.fire-navigation-opt.tab {
+.fire-navigation-opt_tab {
   display: block;
   height: 100px;
   width:100%;
 }
-.fire-navigation-right.tab {
+.fire-navigation-right_tab {
   position: fixed;
   right: 0px;
 }
 
-.fire-naviitem.tab {
+.fire-naviitem_tab {
   font-size: 16px;
   font-weight: normal;
   display: flex;
@@ -118,7 +118,7 @@ body {
   text-decoration: none;
   background-color: #ffeeee;
 }
-.fire-naviitem-checked.tab {
+.fire-naviitem-checked_tab {
   font-size: 16px;
   font-weight: bold;
   display: flex;
@@ -131,6 +131,6 @@ body {
   background-color: #ffeeee;
 }
 
-.fire-naviitem.tab:hover {
+.fire-naviitem_tab:hover {
   background-color: #8888ff;
 }

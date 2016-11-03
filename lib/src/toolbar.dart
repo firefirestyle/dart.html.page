@@ -21,7 +21,7 @@ class Toolbar extends Page {
   String rootId;
   String mode = "_humberger";
   static const String modeHumberger = "_humberger";
-  static const String modeTab = ".tab";
+  static const String modeTab = "_tab";
 
   Toolbar(this.rootId, {this.mode: modeHumberger}) {
     html.window.onHashChange.listen((html.Event ev) {
@@ -61,28 +61,39 @@ class Toolbar extends Page {
     if (rootId != null) {
       rootElm = html.document.body.querySelector("#${rootId}");
     }
-    if (needMakeRoot) {
-      rootElm.children.clear();
-            rootElm.className= "${navigatorId+mode}";
-      rootElm.appendHtml(
-          [
-            """<div id=${navigatorId} class="${navigatorId+mode}"> </div>""", //
-            """<div id=${contentId} class="${contentId+mode}"> </div>""", //
-            """<div id=${footerId} class="${footerId+mode}"> </div>""",
-          ].join("\r\n"), //
-          treeSanitizer: html.NodeTreeSanitizer.trusted);
-    } else {
-      rootElm.className = "${navigatorId+mode}";
-    }
+    //  if (needMakeRoot) {
+    rootElm.children.clear();
+//            rootElm.className= "${navigatorId+mode}";
+    rootElm.appendHtml(
+        [
+          """<div id="${navigatorId+"hum"}" style="display:${mode==modeHumberger?"block":"hide"}">&#9776;</div>""", //
+          """<div id=${navigatorId} class="${navigatorId+mode}">""",
+
+//            """<div id=${navigatorId} class="${navigatorId+mode}"> </div>""", //
+//            """<div id=${contentId} class="${contentId+mode}"> </div>""", //
+//            """<div id=${footerId} class="${footerId+mode}"> </div>""",
+          """</div>""",
+        ].join("\r\n"), //
+        treeSanitizer: html.NodeTreeSanitizer.trusted);
+    //  } else {
+    //    rootElm.className = "${navigatorId+mode}";
+    //  }
     //
+    rootElm.querySelector("""#${navigatorId+"hum"}""").onClick.listen((ev) {
+      rootElm.querySelector("""#${navigatorId}""").style.transform = "translate(280px)";
+    });
     var navigator = rootElm.querySelector("#${navigatorId}");
     navigator.children.clear();
     navigator.appendHtml(
         [
+          """<div id="${navigatorId+"hum-close"}" class="${navigatorItemId+mode}" style="display:${mode==modeHumberger?"block":"hide"}">X</div>""", //
           """<div id=${navigatorLeftId} class="${navigatorLeftId+mode}"> </div>""",
           """<div id=${navigatorRightId} class="${navigatorRightId+mode}"> </div>""", //
         ].join("\r\n"),
         treeSanitizer: html.NodeTreeSanitizer.trusted);
+    rootElm.querySelector("""#${navigatorId+"hum-close"}""").onClick.listen((ev) {
+      rootElm.querySelector("""#${navigatorId}""").style.transform = "translate(0px)";
+    });
   }
 
   updateRight({needMakeRoot: false}) {
