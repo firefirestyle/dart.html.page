@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+    <link href="favicon.ico?version={{.Version}}" rel="icon" type="image/x-icon">
+    <link rel="stylesheet" href="styles.css?version={{.Version}}">
+    <script defer src="main.dart?version={{.Version}}" type="application/dart"></script>
+    <script defer src="packages/browser/dart.js?version={{.Version}}"></script>
+  </head>
+  <body>
+    <div id="fire-navigation" class="fire-navigation"> </div>
+    <div id="fire-navigation-opt" class="fire-navigation-opt"> </div>
+    <div id="fire-content" class="fire-content">
+      <div id="fire-mepage" class="fire-content" style="display:none"></div>
+      <div id="fire-errorpage" class="fire-content" style="display:none"></div>
+      <div id="fire-userpage" class="fire-content" style="display:none"></div>
+      <div id="fire-homepage" class="fire-content" style="display:none"></div>
+      <div id="fire-newpage" class="fire-content" style="display:none"></div>
+      <div id="fire-artpage" class="fire-content" style="display:none"></div>
+      <div id="fire-artsettingpage" class="fire-content" style="display:none"></div>
+
+    </div>
+    <div id="fire-footer" class="fire-footer"></div>
+  </body>
+</html>

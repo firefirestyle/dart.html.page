@@ -1,6 +1,5 @@
 part of firefirestyle.html.page;
 
-
 class ToolbarItem {
   String url;
   String label;
@@ -20,7 +19,11 @@ class Toolbar extends Page {
   Map<String, html.Element> elms = {};
 
   String rootId;
-  Toolbar(this.rootId) {
+  String mode = "_humberger";
+  static const String modeHumberger = "_humberger";
+  static const String modeTab = ".tab";
+
+  Toolbar(this.rootId, {this.mode: modeHumberger}) {
     html.window.onHashChange.listen((html.Event ev) {
       onHashChange();
     });
@@ -32,8 +35,9 @@ class Toolbar extends Page {
   }
 
   void addRightItem(ToolbarItem item) {
-      rightItem = item;
+    rightItem = item;
   }
+
   bool updateEvent(PageManager manager, PageManagerEvent event) {
     if (event == PageManagerEvent.startLoading) {
       for (var key in elms.keys) {
@@ -54,58 +58,61 @@ class Toolbar extends Page {
 
   bakeContainer({needMakeRoot: false}) {
     html.Element rootElm = html.document.body;
-    if (rootId != null){
+    if (rootId != null) {
       rootElm = html.document.body.querySelector("#${rootId}");
     }
     if (needMakeRoot) {
       rootElm.children.clear();
+            rootElm.className= "${navigatorId+mode}";
       rootElm.appendHtml(
           [
-            """<div id=${navigatorId} class="${navigatorId}"> </div>""", //
-            """<div id=${contentId} class="${contentId}"> </div>""", //
-            """<div id=${footerId} class="${footerId}"> </div>""",
+            """<div id=${navigatorId} class="${navigatorId+mode}"> </div>""", //
+            """<div id=${contentId} class="${contentId+mode}"> </div>""", //
+            """<div id=${footerId} class="${footerId+mode}"> </div>""",
           ].join("\r\n"), //
           treeSanitizer: html.NodeTreeSanitizer.trusted);
+    } else {
+      rootElm.className = "${navigatorId+mode}";
     }
     //
     var navigator = rootElm.querySelector("#${navigatorId}");
     navigator.children.clear();
     navigator.appendHtml(
         [
-          """<div id=${navigatorLeftId} class="${navigatorLeftId}"> </div>""",
-          """<div id=${navigatorRightId} class="${navigatorRightId}"> </div>""", //
+          """<div id=${navigatorLeftId} class="${navigatorLeftId+mode}"> </div>""",
+          """<div id=${navigatorRightId} class="${navigatorRightId+mode}"> </div>""", //
         ].join("\r\n"),
         treeSanitizer: html.NodeTreeSanitizer.trusted);
   }
 
   updateRight({needMakeRoot: false}) {
     html.Element rootElm = html.document.body;
-    if (rootId != null){
+    if (rootId != null) {
       rootElm = html.document.body.querySelector("#${rootId}");
     }
     var navigatorRight = rootElm.querySelector("#${navigatorRightId}");
     navigatorRight.children.clear();
-    navigatorRight.appendHtml("""<a href="${rightItem.url}" style="right:100;" class="${navigatorItemId}">${rightItem.label}</a>""", treeSanitizer: html.NodeTreeSanitizer.trusted);
+    navigatorRight.appendHtml("""<a href="${rightItem.url}" style="right:100;" class="${navigatorItemId+mode}">${rightItem.label}</a>""", treeSanitizer: html.NodeTreeSanitizer.trusted);
   }
 
   updateLeft({needMakeRoot: false}) {
     html.Element rootElm = html.document.body;
-    if (rootId != null){
+    if (rootId != null) {
       rootElm = html.document.body.querySelector("#${rootId}");
     }
     var navigatorLeft = rootElm.querySelector("#${navigatorLeftId}");
     navigatorLeft.children.clear();
     for (int i = 0; i < leftItems.length; i++) {
-      var item = new html.Element.html("""<a href="${leftItems[i].url}" id="${navigatorItemId}" class="${navigatorItemId}"> ${leftItems[i].label} </a>""", treeSanitizer: html.NodeTreeSanitizer.trusted);
+      var item = new html.Element.html("""<a href="${leftItems[i].url}" id="${navigatorItemId}" class="${navigatorItemId+mode}"> ${leftItems[i].label} </a>""", treeSanitizer: html.NodeTreeSanitizer.trusted);
       navigatorLeft.children.add(item);
       elms[leftItems[i].url] = item;
       item.onClick.listen((e) {
         for (var ee in elms.values) {
           ee.classes.clear();
           if (item != ee) {
-            ee.classes.add("${navigatorItemId}");
+            ee.classes.add("${navigatorItemId+mode}");
           } else {
-            ee.classes.add("${navigatorItemId}-checked");
+            ee.classes.add("${navigatorItemId}-checked${mode}");
           }
         }
       });

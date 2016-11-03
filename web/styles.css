@@ -1,0 +1,136 @@
+body {
+  -webkit-text-size-adjust: 100%;
+}
+
+.fire-navigation_humberger:hover {
+    transform: translate(280px);
+}
+
+.fire-navigation_humberger:hover + #menu-background {
+    opacity: 0.5;
+    z-index: 999;
+}
+.fire-navigation_humberger {
+  background-color: #fff;
+  box-sizing: border-box;
+  height: 100%;
+  padding: 10px 40px;
+  position: fixed;
+  left: -300px;
+  top: 0;
+  transition: transform 0.3s linear 0s;
+  width: 300px;
+  z-index: 1000;
+}
+
+.fire-navigation_humberger::before {
+    background-color: #fff;
+    border-radius: 0 0 0 10px;
+    color: #333;
+    content: "≡";
+    display: block;
+    font-size: 50px;
+    height: 50px;
+    line-height: 50px;
+    position: absolute;
+    left: 300px;
+    text-align: center;
+    top: 0;
+    width: 50px;
+}
+
+.fire-navigation-opt_humberger {
+  display: block;
+  height: 100px;
+  width:100%;
+}
+.fire-navigation-right_humberger {
+  display: block;
+  height: 100px;
+  width:100%;
+}
+
+.fire-naviitem_humberger {
+  font-size: 16px;
+  font-weight: normal;
+  display: block;
+  flex-wrap:  wrap;
+  color:black;
+  float: none;
+  margin: 0px;
+  padding: 10px;
+  text-decoration: none;
+  background-color: #ffeeee;
+}
+
+
+.fire-naviitem-checked_humberger {
+  font-size: 16px;
+  font-weight: bold;
+  display: block;
+  flex-wrap:  wrap;
+  color:black;
+  float: none;
+  margin: 0px;
+  padding: 10px;
+  text-decoration: none;
+  background-color: #ffeeee;
+}
+
+.fire-naviitem_humberger:hover {
+  background-color: #8888ff;
+}
+
+/*************
+
+
+*************/
+
+
+.fire-navigation.tab {
+  position: fixed;
+  background-color: #ffeeee;
+  color: white;
+  width: 100%;
+  height: 50px;
+  top: 0px;
+  right: 0px;
+}
+.fire-navigation-opt.tab {
+  display: block;
+  height: 100px;
+  width:100%;
+}
+.fire-navigation-right.tab {
+  position: fixed;
+  right: 0px;
+}
+
+.fire-naviitem.tab {
+  font-size: 16px;
+  font-weight: normal;
+  display: flex;
+  flex-wrap:  wrap;
+  color:black;
+  float: left;
+  margin: 0px;
+  padding: 10px;
+  text-decoration: none;
+  background-color: #ffeeee;
+}
+.fire-naviitem-checked.tab {
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  flex-wrap:  wrap;
+  color:black;
+  float: left;
+  margin: 0px;
+  padding: 10px;
+  text-decoration: none;
+  background-color: #ffeeee;
+}
+
+.fire-naviitem.tab:hover {
+  background-color: #8888ff;
+}
