@@ -1,7 +1,7 @@
 body {
   -webkit-text-size-adjust: 100%;
 }
-
+/*
 .fire-navigation_humberger:hover {
     transform: translate(280px);
 }
@@ -9,7 +9,7 @@ body {
 .fire-navigation_humberger:hover + #menu-background {
     opacity: 0.5;
     z-index: 999;
-}
+}*/
 .fire-navigation_humberger {
   background-color: #fff;
   box-sizing: border-box;

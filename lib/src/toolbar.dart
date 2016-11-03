@@ -6,6 +6,31 @@ abstract class ToolbarItem {
     return {};
   }
 }
+class ToolbarItemMulti extends ToolbarItem {
+  List<ToolbarItemSingle> items = [];
+  String label="";
+  String id="";
+
+  ToolbarItemMulti(this.label, this.id,this.items) {
+  }
+
+  html.Element makeElement(String id, String className) {
+    var ret =  new html.Element.html(
+      ["""<div id="${id}">${label}</div>"""].join(), treeSanitizer: html.NodeTreeSanitizer.trusted);
+    items.forEach((v){
+      ret.children.add(v.makeElement(id, className));
+    });
+    return ret;
+  }
+
+  Map<String,ToolbarItem> toUrlItem() {
+    Map<String, ToolbarItemSingle> ret = {};
+    items.forEach((v){
+      ret[v.url] = v;
+    });
+    return ret;
+  }
+}
 
 class ToolbarItemSingle extends ToolbarItem {
   String url;
@@ -19,7 +44,6 @@ class ToolbarItemSingle extends ToolbarItem {
   Map<String,ToolbarItem> toUrlItem() {
     return {url:this};
   }
-
 }
 
 
@@ -46,8 +70,7 @@ class Toolbar extends Page {
     });
   }
 
-  void addLeftItem(ToolbarItemSingle item) {
-    print(">> ${item.label} : ${item.url}");
+  void addLeftItem(ToolbarItem item) {
     leftItems.add(item);
   }
 
@@ -141,14 +164,8 @@ class Toolbar extends Page {
   }
 
   bake({needMakeRoot: false}) {
-//    html.Element rootElm = html.document.body;
-//    if (rootId != null){
-//      rootElm = html.document.body.querySelector("#${rootId}");
-//    }
     bakeContainer(needMakeRoot: needMakeRoot);
-    //
     updateRight(needMakeRoot: needMakeRoot);
-    //
     updateLeft(needMakeRoot: needMakeRoot);
   }
 }

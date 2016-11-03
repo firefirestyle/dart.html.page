@@ -16,8 +16,12 @@ page.Toolbar toolBarObj = new page.Toolbar(null);
 
 void main() {
   print("hello client");
+  List<page.ToolbarItem> items = [];
+  items.add(new page.ToolbarItemSingle("ME A", "#/MeA"));
+  items.add(new page.ToolbarItemSingle("ME B", "#/MeB"));
   toolBarObj = new page.Toolbar(null)//
-  ..addLeftItem(new page.ToolbarItemSingle("ME", "#/Me"))//
+  ..addLeftItem(new page.ToolbarItemMulti("xxx", "xxx",items))//
+//  ..addLeftItem(new page.ToolbarItemSingle("ME", "#/Me"))//
   ..addLeftItem(new page.ToolbarItemSingle("Home", "#/Home"));
   toolBarObj.bake();
 }
