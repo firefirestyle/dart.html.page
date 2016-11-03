@@ -17,7 +17,7 @@ page.Toolbar toolBarObj = new page.Toolbar(null);
 void main() {
   print("hello client");
   toolBarObj = new page.Toolbar(null)//
-  ..addLeftItem(new page.ToolbarItem("ME", "#/Me"))//
-  ..addLeftItem(new page.ToolbarItem("Home", "#/Home"));
+  ..addLeftItem(new page.ToolbarItemSingle("ME", "#/Me"))//
+  ..addLeftItem(new page.ToolbarItemSingle("Home", "#/Home"));
   toolBarObj.bake();
 }

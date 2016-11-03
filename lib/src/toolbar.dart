@@ -1,10 +1,27 @@
 part of firefirestyle.html.page;
 
-class ToolbarItem {
+abstract class ToolbarItem {
+  html.Element makeElement(String id, String className);
+  Map<String,ToolbarItem> toUrlItem() {
+    return {};
+  }
+}
+
+class ToolbarItemSingle extends ToolbarItem {
   String url;
   String label;
-  ToolbarItem(this.label, this.url) {}
+  ToolbarItemSingle(this.label, this.url) {
+  }
+  html.Element makeElement(String id, String className) {
+    return new html.Element.html(
+      ["""<a href="${url}" id="${id}" class="${className}"> ${label} </a>"""].join(), treeSanitizer: html.NodeTreeSanitizer.trusted);
+  }
+  Map<String,ToolbarItem> toUrlItem() {
+    return {url:this};
+  }
+
 }
+
 
 class Toolbar extends Page {
   String navigatorId = "fire-navigation";
@@ -15,7 +32,7 @@ class Toolbar extends Page {
   String navigatorItemId = "fire-naviitem";
 
   List<ToolbarItem> leftItems = [];
-  ToolbarItem rightItem = new ToolbarItem("(-_-)", "");
+  ToolbarItem rightItem = new ToolbarItemSingle("(-_-)", "");
   Map<String, html.Element> elms = {};
 
   String rootId;
@@ -29,7 +46,7 @@ class Toolbar extends Page {
     });
   }
 
-  void addLeftItem(ToolbarItem item) {
+  void addLeftItem(ToolbarItemSingle item) {
     print(">> ${item.label} : ${item.url}");
     leftItems.add(item);
   }
@@ -61,24 +78,14 @@ class Toolbar extends Page {
     if (rootId != null) {
       rootElm = html.document.body.querySelector("#${rootId}");
     }
-    //  if (needMakeRoot) {
     rootElm.children.clear();
-//            rootElm.className= "${navigatorId+mode}";
     rootElm.appendHtml(
         [
           """<div id="${navigatorId+"hum"}" style="display:${mode==modeHumberger?"block":"hide"}">&#9776;</div>""", //
           """<div id=${navigatorId} class="${navigatorId+mode}">""",
-
-//            """<div id=${navigatorId} class="${navigatorId+mode}"> </div>""", //
-//            """<div id=${contentId} class="${contentId+mode}"> </div>""", //
-//            """<div id=${footerId} class="${footerId+mode}"> </div>""",
           """</div>""",
         ].join("\r\n"), //
         treeSanitizer: html.NodeTreeSanitizer.trusted);
-    //  } else {
-    //    rootElm.className = "${navigatorId+mode}";
-    //  }
-    //
     rootElm.querySelector("""#${navigatorId+"hum"}""").onClick.listen((ev) {
       rootElm.querySelector("""#${navigatorId}""").style.transform = "translate(280px)";
     });
@@ -103,7 +110,7 @@ class Toolbar extends Page {
     }
     var navigatorRight = rootElm.querySelector("#${navigatorRightId}");
     navigatorRight.children.clear();
-    navigatorRight.appendHtml("""<a href="${rightItem.url}" style="right:100;" class="${navigatorItemId+mode}">${rightItem.label}</a>""", treeSanitizer: html.NodeTreeSanitizer.trusted);
+    navigatorRight.children.add(rightItem.makeElement("", """${navigatorItemId+mode}"""));
   }
 
   updateLeft({needMakeRoot: false}) {
@@ -114,19 +121,22 @@ class Toolbar extends Page {
     var navigatorLeft = rootElm.querySelector("#${navigatorLeftId}");
     navigatorLeft.children.clear();
     for (int i = 0; i < leftItems.length; i++) {
-      var item = new html.Element.html("""<a href="${leftItems[i].url}" id="${navigatorItemId}" class="${navigatorItemId+mode}"> ${leftItems[i].label} </a>""", treeSanitizer: html.NodeTreeSanitizer.trusted);
-      navigatorLeft.children.add(item);
-      elms[leftItems[i].url] = item;
-      item.onClick.listen((e) {
-        for (var ee in elms.values) {
-          ee.classes.clear();
-          if (item != ee) {
-            ee.classes.add("${navigatorItemId+mode}");
-          } else {
-            ee.classes.add("${navigatorItemId}-checked${mode}");
+      leftItems[i].toUrlItem().forEach((k,ToolbarItem v){
+        var item = leftItems[i].makeElement("", "${navigatorItemId+mode}");
+        navigatorLeft.children.add(item);
+        elms[k] = item;
+        item.onClick.listen((e) {
+          for (var ee in elms.values) {
+            ee.classes.clear();
+            if (item != ee) {
+              ee.classes.add("${navigatorItemId+mode}");
+            } else {
+              ee.classes.add("${navigatorItemId}-checked${mode}");
+            }
           }
-        }
+        });
       });
+
     }
   }
 
