@@ -81,8 +81,8 @@ class Toolbar extends Page {
   String mode = "_humberger";
   static const String modeHumberger = "_humberger";
   static const String modeTab = "_tab";
-
-  Toolbar(this.rootId, {this.mode: modeTab}) {
+  bool hashChangeIsClose;
+  Toolbar(this.rootId, {this.mode: modeTab, this.hashChangeIsClose: true}) {
     html.window.onHashChange.listen((html.Event ev) {
       onHashChange();
     });
@@ -110,15 +110,16 @@ class Toolbar extends Page {
   }
 
   void onHashChange() {
+    if (this.hashChangeIsClose == true) {
+      html.Element rootElm = getRootElement();
+      rootElm.querySelector("""#${navigatorId}""").style.transform = "translate(0px)";
+    }
     //::selectio
     //  var e = elm[html.window.location.hash];
   }
 
   bakeContainer({needMakeRoot: false}) {
-    html.Element rootElm = html.document.body;
-    if (rootId != null) {
-      rootElm = html.document.body.querySelector("#${rootId}");
-    }
+    html.Element rootElm = getRootElement();
     rootElm.children.clear();
     rootElm.appendHtml(
         [
