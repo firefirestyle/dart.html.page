@@ -90,7 +90,7 @@ class Toolbar extends Page {
   static const String modeHumberger = "_humberger";
   static const String modeTab = "_tab";
 
-  Toolbar(this.rootId, {this.mode: modeHumberger}) {
+  Toolbar(this.rootId, {this.mode: modeTab}) {
     html.window.onHashChange.listen((html.Event ev) {
       onHashChange();
     });
