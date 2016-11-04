@@ -1,7 +1,9 @@
 part of firefirestyle.html.page;
 
 abstract class ToolbarItem {
-  html.Element makeElement(String id, String className);
+  bool isOpen = true;
+  bool isChaild = false;
+  html.Element makeElement(String className);
   Map<String, ToolbarItem> toUrlItem() {
     return {};
   }
@@ -11,27 +13,45 @@ class ToolbarItemMulti extends ToolbarItem {
   List<ToolbarItemSingle> items = [];
   String label = "";
   String id = "";
+  String rootId = "";
+  Toolbar parent;
 
-  ToolbarItemMulti(this.label, this.id, this.items) {}
+  ToolbarItemMulti(this.parent, this.label, this.id, this.items) {
+    isOpen = false;
+    rootId = parent.rootId;
+    for (var item in items) {
+      item.isOpen = false;
+      item.isChaild = true;
+    }
+  }
 
-  html.Element makeElement(String ida, String className) {
-    var ret = new html.Element.html(["""<div ><div id="${id}" style="width:100%;">${label}<div><div id="${"${id}cont"}" style="display:none;"></div></div>"""].join(), treeSanitizer: html.NodeTreeSanitizer.trusted);
-    var retCont = ret.querySelector("#${id}cont");
-    items.forEach((v) {
-      retCont.children.add(v.makeElement(ida, className));
-    });
-    ret.querySelector("#${id}").onClick.listen((ev){
-      if(retCont.style.display == "block") {
-        retCont.style.display = "none";
-      } else {
-        retCont.style.display = "block";
+  html.Element makeElement(String className) {
+    var ret = new html.Element.html(
+        [
+          """<div id="${id}" class="${className}">${label}</div>""", //
+        ].join(),
+        treeSanitizer: html.NodeTreeSanitizer.trusted);
+    ret.onClick.listen((ev) {
+      var rootElm = parent.getRootElement();
+      for (var item in items) {
+        var v = rootElm.querySelector("#${item.id}");
+        if (v == null) {
+          continue;
+        }
+        if (isOpen == false) {
+          v.style.display = "block";
+        } else {
+          v.style.display = "none";
+        }
       }
+      isOpen = (isOpen == false ? true : false);
     });
     return ret;
   }
 
   Map<String, ToolbarItem> toUrlItem() {
-    Map<String, ToolbarItemSingle> ret = {};
+    Map<String, ToolbarItem> ret = {};
+    ret[id] = this;
     items.forEach((v) {
       ret[v.url] = v;
     });
@@ -42,9 +62,10 @@ class ToolbarItemMulti extends ToolbarItem {
 class ToolbarItemSingle extends ToolbarItem {
   String url;
   String label;
-  ToolbarItemSingle(this.label, this.url) {}
-  html.Element makeElement(String id, String className) {
-    return new html.Element.html(["""<a href="${url}" id="${id}" class="${className}"> ${label} </a>"""].join(), treeSanitizer: html.NodeTreeSanitizer.trusted);
+  String id;
+  ToolbarItemSingle(this.id, this.label, this.url) {}
+  html.Element makeElement(String className) {
+    return new html.Element.html(["""<a href="${url}" id="${id}" class="${className}" style="display:${(isOpen==false?"none":"block")}">${(isChaild==true?"&nbsp;":"")} ${label} </a>"""].join(), treeSanitizer: html.NodeTreeSanitizer.trusted);
   }
 
   Map<String, ToolbarItem> toUrlItem() {
@@ -61,7 +82,7 @@ class Toolbar extends Page {
   String navigatorItemId = "fire-naviitem";
 
   List<ToolbarItem> leftItems = [];
-  ToolbarItem rightItem = new ToolbarItemSingle("(-_-)", "");
+  ToolbarItem rightItem = new ToolbarItemSingle("right", "(-_-)", "");
   Map<String, html.Element> elms = {};
 
   String rootId;
@@ -121,7 +142,7 @@ class Toolbar extends Page {
     navigator.children.clear();
     navigator.appendHtml(
         [
-          """<div id="${navigatorId+"hum-close"}" class="${navigatorItemId+mode}" style="display:${mode==modeHumberger?"block":"hide"}">X</div>""", //
+          """<div id="${navigatorId+"hum-close"}" class="${navigatorItemId+mode}" style="display:${mode==modeHumberger?"block":"none"}">X</div>""", //
           """<div id=${navigatorLeftId} class="${navigatorLeftId+mode}"> </div>""",
           """<div id=${navigatorRightId} class="${navigatorRightId+mode}"> </div>""", //
         ].join("\r\n"),
@@ -138,21 +159,26 @@ class Toolbar extends Page {
     }
     var navigatorRight = rootElm.querySelector("#${navigatorRightId}");
     navigatorRight.children.clear();
-    navigatorRight.children.add(rightItem.makeElement("", """${navigatorItemId+mode}"""));
+    navigatorRight.children.add(rightItem.makeElement("${navigatorItemId+mode}" ""));
   }
 
-  updateLeft({needMakeRoot: false}) {
+  html.Element getRootElement() {
     html.Element rootElm = html.document.body;
     if (rootId != null) {
       rootElm = html.document.body.querySelector("#${rootId}");
     }
+    return rootElm;
+  }
+
+  updateLeft({needMakeRoot: false}) {
+    html.Element rootElm = getRootElement();
     var navigatorLeft = rootElm.querySelector("#${navigatorLeftId}");
     navigatorLeft.children.clear();
     for (int i = 0; i < leftItems.length; i++) {
-      var item = leftItems[i].makeElement("", "${navigatorItemId+mode}");
-      navigatorLeft.children.add(item);
-
       leftItems[i].toUrlItem().forEach((k, ToolbarItem v) {
+//        var item = leftItems[i].makeElement("", "${navigatorItemId+mode}");
+        var item = v.makeElement("${navigatorItemId+mode}");
+        navigatorLeft.children.add(item);
         elms[k] = item;
         item.onClick.listen((e) {
           for (var ee in elms.values) {
