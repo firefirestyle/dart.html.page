@@ -12,7 +12,7 @@ void main() {
   items.add(new page.ToolbarItemSingle("aa","ME A", "#/MeA"));
   items.add(new page.ToolbarItemSingle("bb","ME B", "#/MeB"));
   toolBarObj = new page.Toolbar(null)//
-  ..addLeftItem(new page.ToolbarItemMulti(toolBarObj,"xxx", "xxx",items))//
+  ..addLeftItem(new page.ToolbarItemMulti("xxx", "xxx",items))//
 //  ..addLeftItem(new page.ToolbarItemSingle("ME", "#/Me"))//
   ..addLeftItem(new page.ToolbarItemSingle("dd","Home", "#/Home"));
   toolBarObj.bake();

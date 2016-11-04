@@ -3,7 +3,7 @@ part of firefirestyle.html.page;
 abstract class ToolbarItem {
   bool isOpen = true;
   bool isChaild = false;
-  html.Element makeElement(String className);
+  html.Element makeElement(html.Element rootElm, String className);
   Map<String, ToolbarItem> toUrlItem() {
     return {};
   }
@@ -13,26 +13,18 @@ class ToolbarItemMulti extends ToolbarItem {
   List<ToolbarItemSingle> items = [];
   String label = "";
   String id = "";
-  String rootId = "";
-  Toolbar parent;
 
-  ToolbarItemMulti(this.parent, this.label, this.id, this.items) {
+  ToolbarItemMulti(this.label, this.id, this.items) {
     isOpen = false;
-    rootId = parent.rootId;
     for (var item in items) {
       item.isOpen = false;
       item.isChaild = true;
     }
   }
 
-  html.Element makeElement(String className) {
-    var ret = new html.Element.html(
-        [
-          """<div id="${id}" class="${className}">${label}</div>""", //
-        ].join(),
-        treeSanitizer: html.NodeTreeSanitizer.trusted);
+  html.Element makeElement(html.Element rootElm, String className) {
+    var ret = new html.Element.html(["""<div id="${id}" class="${className}">${label}</div>""",].join(), treeSanitizer: html.NodeTreeSanitizer.trusted);
     ret.onClick.listen((ev) {
-      var rootElm = parent.getRootElement();
       for (var item in items) {
         var v = rootElm.querySelector("#${item.id}");
         if (v == null) {
@@ -64,7 +56,7 @@ class ToolbarItemSingle extends ToolbarItem {
   String label;
   String id;
   ToolbarItemSingle(this.id, this.label, this.url) {}
-  html.Element makeElement(String className) {
+  html.Element makeElement(html.Element rootElm, String className) {
     return new html.Element.html(["""<a href="${url}" id="${id}" class="${className}" style="display:${(isOpen==false?"none":"block")}">${(isChaild==true?"&nbsp;":"")} ${label} </a>"""].join(), treeSanitizer: html.NodeTreeSanitizer.trusted);
   }
 
@@ -159,7 +151,7 @@ class Toolbar extends Page {
     }
     var navigatorRight = rootElm.querySelector("#${navigatorRightId}");
     navigatorRight.children.clear();
-    navigatorRight.children.add(rightItem.makeElement("${navigatorItemId+mode}" ""));
+    navigatorRight.children.add(rightItem.makeElement(getRootElement(), "${navigatorItemId+mode}" ""));
   }
 
   html.Element getRootElement() {
@@ -177,7 +169,7 @@ class Toolbar extends Page {
     for (int i = 0; i < leftItems.length; i++) {
       leftItems[i].toUrlItem().forEach((k, ToolbarItem v) {
 //        var item = leftItems[i].makeElement("", "${navigatorItemId+mode}");
-        var item = v.makeElement("${navigatorItemId+mode}");
+        var item = v.makeElement(getRootElement(), "${navigatorItemId+mode}");
         navigatorLeft.children.add(item);
         elms[k] = item;
         item.onClick.listen((e) {
