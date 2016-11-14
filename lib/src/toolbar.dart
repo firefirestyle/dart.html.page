@@ -171,6 +171,9 @@ class Toolbar extends Page {
       leftItems[i].toUrlItem().forEach((k, ToolbarItem v) {
 //        var item = leftItems[i].makeElement("", "${navigatorItemId+mode}");
         var item = v.makeElement(getRootElement(), "${navigatorItemId+mode}");
+        item.onClick.listen((e){
+          onHashChange();
+        });
         navigatorLeft.children.add(item);
         elms[k] = item;
         item.onClick.listen((e) {
